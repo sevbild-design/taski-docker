@@ -1,0 +1,44 @@
+# Файл docker-compose.yml
+
+# Перечень volume
+volumes:
+  pg_data:
+  static:
+
+# Перечень контейнеров
+services:
+
+  # Контейнер БД
+  db:
+    image: postgres:13.10
+    env_file: .env
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+
+  # Контейнер с бэкендом
+  backend:
+    image: wantedpa/taski_backend
+    env_file: .env
+    volumes:
+      - static:/backend_static
+    # depends_on:
+    #   - db
+
+  # Контейнер с фронтендом
+  frontend:
+    env_file: .env
+    image: wantedpa/taski_frontend
+    command: cp -r /app/build/. /frontend_static/
+    volumes:
+      - static:/frontend_static
+
+  # Контейнер gateway
+  gateway:
+    image: wantedpa/taski_gateway
+    volumes:
+      - static:/staticfiles
+    ports:
+      - 8000:80
+    depends_on:
+      - backend
+      - frontend
