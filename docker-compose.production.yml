@@ -11,6 +11,7 @@ services:
   # Контейнер БД
   db:
     image: postgres:13.10
+    restart: always
     env_file: .env
     volumes:
       - pg_data:/var/lib/postgresql/data
@@ -18,6 +19,7 @@ services:
   # Контейнер с бэкендом
   backend:
     image: wantedpa/taski_backend
+    restart: always
     env_file: .env
     volumes:
       - static:/backend_static
@@ -35,6 +37,7 @@ services:
   # Контейнер gateway
   gateway:
     image: wantedpa/taski_gateway
+    restart: always
     volumes:
       - static:/staticfiles
     ports:
@@ -42,3 +45,4 @@ services:
     depends_on:
       - backend
       - frontend
+      
